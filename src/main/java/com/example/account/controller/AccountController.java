@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
-    private final RedisTestService redisTestService;
+//    private final RedisTestService redisTestService;
 
-    @GetMapping("/get-lock")
-    public String getLock() {
-        return redisTestService.getLock();
-    }
+//    @GetMapping("/get-lock")
+//    public String getLock() {
+//        return redisTestService.getLock();
+//    }
 
     @GetMapping("/create-account")
     public String createAccount() {
