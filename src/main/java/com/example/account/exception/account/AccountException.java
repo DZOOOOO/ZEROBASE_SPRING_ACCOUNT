@@ -1,4 +1,4 @@
-package com.example.account.exception;
+package com.example.account.exception.account;
 
 import com.example.account.type.ErrorCode;
 import lombok.*;

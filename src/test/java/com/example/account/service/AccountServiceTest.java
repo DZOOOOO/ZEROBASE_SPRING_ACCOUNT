@@ -3,7 +3,7 @@ package com.example.account.service;
 import com.example.account.domain.account.Account;
 import com.example.account.domain.account.AccountUser;
 import com.example.account.dto.account.AccountDto;
-import com.example.account.exception.AccountException;
+import com.example.account.exception.account.AccountException;
 import com.example.account.repository.account.AccountRepository;
 import com.example.account.repository.account.AccountUserRepository;
 import com.example.account.service.account.AccountService;
@@ -46,9 +46,8 @@ class AccountServiceTest {
     void createAccountSuccess() {
         // given
         AccountUser user = AccountUser.builder()
-                .id(12L)
                 .name("Pobi").build();
-
+        user.setId(12L);
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
         given(accountRepository.findFirstByOrderByIdDesc())
@@ -67,7 +66,9 @@ class AccountServiceTest {
         // then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(12L, accountDto.getUserId());
-        assertEquals("1000000013", captor.getValue().getAccountNumber());
+        // 계좌 번호가 무작위로 들어 오기 때문에 새롭게 만든 메서드에서는 10자리 정수인지만 체크
+        assertEquals(10, captor.getValue().getAccountNumber().length());
+        // assertEquals("1000000013", captor.getValue().getAccountNumber());
     }
 
     @Test
@@ -75,8 +76,8 @@ class AccountServiceTest {
     void createFirstAccount() {
         // given
         AccountUser user = AccountUser.builder()
-                .id(15L)
                 .name("Pobi").build();
+        user.setId(15L);
 
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
@@ -96,7 +97,10 @@ class AccountServiceTest {
         // then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(15L, accountDto.getUserId());
-        assertEquals("1000000000", captor.getValue().getAccountNumber());
+        // 계좌 번호가 무작위로 들어 오기 때문에 새롭게 만든 메서드에서는 10자리 정수인지만 체크
+         assertEquals(10, captor.getValue().getAccountNumber().length());
+        // assertEquals("1000000013", captor.getValue().getAccountNumber());
+
     }
 
     @Test
@@ -118,9 +122,9 @@ class AccountServiceTest {
     @DisplayName("유저 당 최대 계좌는 10개")
     void createAccount_maxAccountIs10() {
         AccountUser user = AccountUser.builder()
-                .id(15L)
                 .name("Pobi")
                 .build();
+        user.setId(15L);
 
         // given
         given(accountUserRepository.findById(anyLong()))
@@ -141,9 +145,9 @@ class AccountServiceTest {
     void deleteAccountSuccess() {
         // given
         AccountUser user = AccountUser.builder()
-                .id(12L)
                 .name("Pobi")
                 .build();
+        user.setId(12L);
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
         given(accountRepository.findByAccountNumber(anyString()))
@@ -182,9 +186,9 @@ class AccountServiceTest {
     void deleteAccount_AccountNotFound() {
         // given
         AccountUser user = AccountUser.builder()
-                .id(12L)
                 .name("Pobi")
                 .build();
+        user.setId(12L);
 
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.ofNullable(user));
@@ -206,14 +210,14 @@ class AccountServiceTest {
     void deleteAccountFailed_userUnMatch() {
         // given
         AccountUser pobi = AccountUser.builder()
-                .id(1L)
                 .name("Pobi")
                 .build();
+        pobi.setId(1L);
 
         AccountUser harry = AccountUser.builder()
-                .id(13L)
                 .name("Harry")
                 .build();
+        harry.setId(13L);
 
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(pobi));
@@ -238,9 +242,9 @@ class AccountServiceTest {
     void deleteAccountFailed_balanceNotEmpty() {
         // given
         AccountUser pobi = AccountUser.builder()
-                .id(1L)
                 .name("Pobi")
                 .build();
+        pobi.setId(1L);
 
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(pobi));
@@ -265,9 +269,9 @@ class AccountServiceTest {
     void deleteAccountFailed_alreadyUnregistered() {
         // given
         AccountUser pobi = AccountUser.builder()
-                .id(1L)
                 .name("Pobi")
                 .build();
+        pobi.setId(1L);
 
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(pobi));
@@ -293,9 +297,10 @@ class AccountServiceTest {
     void successGetAccountsByUserId() {
         // given
         AccountUser pobi = AccountUser.builder()
-                .id(1L)
                 .name("Pobi")
                 .build();
+        pobi.setId(1L);
+
         List<Account> accounts = Arrays.asList(
                 Account.builder()
                         .accountUser(pobi)

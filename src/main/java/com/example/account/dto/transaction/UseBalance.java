@@ -1,5 +1,6 @@
 package com.example.account.dto.transaction;
 
+import com.example.account.aop.AccountLockIdInterface;
 import com.example.account.type.transaction.TransactionResultType;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -19,7 +20,7 @@ public class UseBalance {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class Request {
+    public static class Request implements AccountLockIdInterface{
         @NotNull
         @Min(1)
         private Long userId;
@@ -48,7 +49,7 @@ public class UseBalance {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class Response {
+    public static class Response implements AccountLockIdInterface {
         private String accountNumber;
         private TransactionResultType transactionResult;
         private String transactionId;

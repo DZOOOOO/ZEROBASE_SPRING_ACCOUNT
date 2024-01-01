@@ -4,7 +4,7 @@ import com.example.account.domain.account.Account;
 import com.example.account.domain.account.AccountUser;
 import com.example.account.domain.transaction.Transaction;
 import com.example.account.dto.transaction.TransactionDto;
-import com.example.account.exception.AccountException;
+import com.example.account.exception.account.AccountException;
 import com.example.account.repository.account.AccountRepository;
 import com.example.account.repository.account.AccountUserRepository;
 import com.example.account.repository.transaction.TransactionRepository;

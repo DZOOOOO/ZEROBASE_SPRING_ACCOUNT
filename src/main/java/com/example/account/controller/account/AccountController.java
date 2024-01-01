@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final AccountService accountService;
-//    private final RedisTestService redisTestService;
 
     @PostMapping("/account")
     public CreateAccount.Response createAccount(@RequestBody @Valid CreateAccount.Request request) {
@@ -47,12 +46,6 @@ public class AccountController {
                         .build())
                 .collect(Collectors.toList());
     }
-
-
-//    @GetMapping("/get-lock")
-//    public String getLock() {
-//        return redisTestService.getLock();
-//    }
 
     @GetMapping("/account/{id}")
     public Account getAccount(@PathVariable("id") Long id) {

@@ -1,9 +1,10 @@
 package com.example.account.controller.transaction;
 
+import com.example.account.aop.AccountLock;
 import com.example.account.dto.transaction.CancelBalance;
 import com.example.account.dto.transaction.QueryTransactionResponse;
 import com.example.account.dto.transaction.UseBalance;
-import com.example.account.exception.AccountException;
+import com.example.account.exception.account.AccountException;
 import com.example.account.service.transaction.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,12 @@ public class TransactionController {
 
     // 거래 생성 API
     @PostMapping("/transaction/use")
-    public UseBalance.Response useBalance(@Valid @RequestBody UseBalance.Request request) {
+    @AccountLock
+    public UseBalance.Response useBalance(@Valid @RequestBody UseBalance.Request request) throws InterruptedException {
 
         try {
             // 성공건 저장
+            Thread.sleep(3000L);
             return UseBalance.Response.from(
                     transactionService.useBalance(
                             request.getUserId(),
@@ -49,6 +52,7 @@ public class TransactionController {
 
     // 거래 취소 API
     @PostMapping("/transaction/cancel")
+    @AccountLock
     public CancelBalance.Response cancelBalance(@Valid @RequestBody CancelBalance.Request request) {
         try {
             return CancelBalance.Response.from(
