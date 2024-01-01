@@ -26,6 +26,12 @@ public class GlobalException {
         return new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ErrorResponse handleNullPointerException(NullPointerException e) {
+        log.error("NullPointerException is occurred.", e);
+        return new ErrorResponse(ErrorCode.INVALID_REQUEST, ErrorCode.INVALID_REQUEST.getDescription());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException is occurred.", e);

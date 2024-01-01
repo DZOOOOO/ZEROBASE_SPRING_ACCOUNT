@@ -24,8 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -223,6 +222,42 @@ class TransactionServiceTest {
         // then
         assertEquals(ErrorCode.AMOUNT_EXCEED_BALANCE, exception.getErrorCode());
         verify(transactionRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("거래 금액이 너무 큰 경우, 너무 작은 경우 - 잔액 사용 실패")
+    void maxAmount_MinAmount_UseBalance() {
+        // given
+        AccountUser user = AccountUser.builder()
+                .name("Pobi")
+                .build();
+        user.setId(1L);
+
+        Account account = Account.builder()
+                .accountUser(user)
+                .accountStatus(AccountStatus.IN_USE)
+                .balance(100L)
+                .accountNumber("1000000012")
+                .build();
+
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(user));
+
+        given(accountRepository.findByAccountNumber(anyString()))
+                .willReturn(Optional.of(account));
+
+        // when
+        // 1. 거래 금액이 너무 큰 경우 (최대 값 보다 큰 경우)
+        AccountException exception1 = assertThrows(AccountException.class,
+                () -> transactionService.useBalance(1L, "1234567890", 1000_000_001L));
+
+        // 2. 거래 금액이 너무 작은 경우 (최소 값 보다 작은 경우)
+        AccountException exception2 = assertThrows(AccountException.class,
+                () -> transactionService.useBalance(1L, "1234567890", 9L));
+
+        // then
+        assertEquals(ErrorCode.AMOUNT_EXCEED_BALANCE, exception1.getErrorCode());
+        assertEquals(ErrorCode.INVALID_REQUEST, exception2.getErrorCode());
     }
 
     @Test

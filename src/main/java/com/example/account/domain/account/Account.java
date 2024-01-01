@@ -34,11 +34,15 @@ public class Account extends BaseEntity {
     private LocalDateTime unRegisteredAt;
 
     public void useBalance(Long amount) {
+        if (amount < 10) {
+            throw new AccountException(ErrorCode.INVALID_REQUEST);
+        }
         if (amount > balance) {
             throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
         }
         balance -= amount;
     }
+
 
     public void cancelBalance(Long amount) {
         if (amount < 0) {

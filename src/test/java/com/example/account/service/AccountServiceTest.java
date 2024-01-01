@@ -104,7 +104,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("해당 유저 없음 - 계좌 생성 실패")
+    @DisplayName("사용자가 없는 경우 -> 계좌생성 안됨.")
     void createAccount_UserNotFound() {
         // given
         given(accountUserRepository.findById(anyLong()))
@@ -119,7 +119,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("유저 당 최대 계좌는 10개")
+    @DisplayName("계좌 생성 10개 초과인 경우 -> 계좌생성 안됨.")
     void createAccount_maxAccountIs10() {
         AccountUser user = AccountUser.builder()
                 .name("Pobi")
@@ -168,7 +168,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("해당 유저 없음 - 계좌 해지 실패")
+    @DisplayName("사용자가 없는 경우 -> 계좌해지 실패")
     void deleteAccount_userNotFound() {
         // given
         given(accountUserRepository.findById(anyLong()))
@@ -206,7 +206,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("계좌 소유주 다름")
+    @DisplayName("계좌 소유주 다름 -> 계좌해지 실패")
     void deleteAccountFailed_userUnMatch() {
         // given
         AccountUser pobi = AccountUser.builder()
@@ -238,7 +238,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("해지 계좌는 잔액이 없어야 한다.")
+    @DisplayName("잔액이 있으면 -> 계좌해지 실패")
     void deleteAccountFailed_balanceNotEmpty() {
         // given
         AccountUser pobi = AccountUser.builder()
@@ -265,7 +265,7 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("해지 계좌는 해지할 수 없다..")
+    @DisplayName("이미 해지된 계좌 -> 계좌해지 실패")
     void deleteAccountFailed_alreadyUnregistered() {
         // given
         AccountUser pobi = AccountUser.builder()
